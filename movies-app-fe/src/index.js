@@ -10,7 +10,7 @@ import Genres from './components/Genres';
 import EditMovies from './components/EditMovies';
 import ManageCatalog from './components/ManageCatalog';
 import GraphQL from './components/GraphQL';
-import Login from './components/EditMovies copy';
+import Login from './components/Login';
 
 const router  = createBrowserRouter([
   {
