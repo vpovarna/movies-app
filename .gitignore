@@ -1,2 +1,4 @@
 movies-app-fe/node_modules
+movies-app-be/*.xml
+movies-app-be/.idea
 .DS_Store

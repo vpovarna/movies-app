@@ -21,13 +21,12 @@ func main() {
 	// connect to the database
 
 	app.domain = "example.com"
-	
+
 	log.Printf("Starting application on port: %d", port)
 
 	// start the web server
-	mux := http.NewServeMux()
-	err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
-
+	routes := app.routes()
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port), routes)
 	if err != nil {
 		log.Fatal("Unable to start the http server")
 	}
