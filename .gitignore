@@ -3,3 +3,4 @@ movies-app-be/*.xml
 movies-app-be/.idea
 .DS_Store
 movies-app-be/.docker/postgres-data
+.idea
