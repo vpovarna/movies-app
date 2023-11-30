@@ -78,7 +78,7 @@ func (m *PostgresDBRepo) GetUserByEmail(email string) (*models.User, error) {
 	err := row.Scan(
 		&user.ID,
 		&user.Email,
-		&user.FistName,
+		&user.FirstName,
 		&user.LastName,
 		&user.Password,
 		&user.CreatedAt,
@@ -106,7 +106,7 @@ func (m *PostgresDBRepo) GetUserById(id int) (*models.User, error) {
 	err := row.Scan(
 		&user.ID,
 		&user.Email,
-		&user.FistName,
+		&user.FirstName,
 		&user.LastName,
 		&user.Password,
 		&user.CreatedAt,

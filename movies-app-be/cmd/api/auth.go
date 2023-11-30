@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/golang-jwt/jwt/v4"
 	"net/http"
 	"time"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type Auth struct {
@@ -42,11 +43,11 @@ func (j *Auth) GenerateTokenPair(user *jwtUser) (TokenPairs, error) {
 	claims["name"] = fmt.Sprintf("%s %s", user.FirstName, user.LastName)
 	claims["sub"] = fmt.Sprint(user.ID)
 	claims["aud"] = j.Audience
-	claims["iis"] = j.Issuer
+	claims["iss"] = j.Issuer
 	claims["iat"] = time.Now().UTC().Unix()
 	claims["typ"] = "JWT"
 
-	// Set the expiry for jwt
+	// Set the expiry for JWT
 	claims["exp"] = time.Now().UTC().Add(j.TokenExpiry).Unix()
 
 	// Create a signed token
@@ -64,27 +65,27 @@ func (j *Auth) GenerateTokenPair(user *jwtUser) (TokenPairs, error) {
 	// Set the expiry for the refresh token
 	refreshTokenClaims["exp"] = time.Now().UTC().Add(j.RefreshExpiry).Unix()
 
-	// Create sighed refresh token
+	// Create signed refresh token
 	signedRefreshToken, err := refreshToken.SignedString([]byte(j.Secret))
 	if err != nil {
 		return TokenPairs{}, err
 	}
 
-	// Create tokenPairs and populate with signed tokens
-	tokenPairs := TokenPairs{
+	// Create TokenPairs and populate with signed tokens
+	var tokenPairs = TokenPairs{
 		Token:        signedAccessToken,
 		RefreshToken: signedRefreshToken,
 	}
 
-	// return token pairs
+	// Return TokenPairs
 	return tokenPairs, nil
 }
 
 func (j *Auth) GetRefreshCookie(refreshToken string) *http.Cookie {
 	return &http.Cookie{
 		Name:     j.CookieName,
-		Value:    refreshToken,
 		Path:     j.CookiePath,
+		Value:    refreshToken,
 		Expires:  time.Now().Add(j.RefreshExpiry),
 		MaxAge:   int(j.RefreshExpiry.Seconds()),
 		SameSite: http.SameSiteStrictMode,
@@ -95,11 +96,10 @@ func (j *Auth) GetRefreshCookie(refreshToken string) *http.Cookie {
 }
 
 func (j *Auth) GetExpiredRefreshCookie() *http.Cookie {
-	// To delete a cookie, we can just expire it setting up the value to be empty string and the expiration to be time -1
 	return &http.Cookie{
 		Name:     j.CookieName,
-		Value:    "",
 		Path:     j.CookiePath,
+		Value:    "",
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		SameSite: http.SameSiteStrictMode,

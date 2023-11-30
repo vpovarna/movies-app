@@ -13,7 +13,7 @@ import (
 const port = 18081
 
 type application struct {
-	DNS          string
+	DSN          string
 	Domain       string
 	DB           repository.DatabaseRepo
 	auth         Auth
@@ -27,13 +27,13 @@ func main() {
 	// set application config
 	var app application
 
-	// read from command line (flags)
-	flag.StringVar(&app.DNS, "dns", "host=localhost port=5432 user=postgres password=postgres dbname=movies sslmode=disable timezone=UTC connect_timeout=5", "POSTGRES_CONNECTION_STRING")
-	flag.StringVar(&app.JWTSecret, "jwt-secret", "verySecret", "signing secret")
+	// read from command line
+	flag.StringVar(&app.DSN, "dsn", "host=localhost port=5432 user=postgres password=postgres dbname=movies sslmode=disable timezone=UTC connect_timeout=5", "Postgres connection string")
+	flag.StringVar(&app.JWTSecret, "jwt-secret", "verysecret", "signing secret")
 	flag.StringVar(&app.JWTIssuer, "jwt-issuer", "example.com", "signing issuer")
 	flag.StringVar(&app.JWTAudience, "jwt-audience", "example.com", "signing audience")
-	flag.StringVar(&app.CookieDomain, "cookie-Domain", "localhost", "cookie Domain")
-	flag.StringVar(&app.Domain, "Domain", "example.com", "Domain")
+	flag.StringVar(&app.CookieDomain, "cookie-domain", "localhost", "cookie domain")
+	flag.StringVar(&app.Domain, "domain", "example.com", "domain")
 	flag.Parse()
 
 	// connect to the database
@@ -41,7 +41,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	app.DB = &dbrepo.PostgresDBRepo{DB: conn}
 	defer app.DB.Connection().Close()
 
@@ -51,18 +50,16 @@ func main() {
 		Secret:        app.JWTSecret,
 		TokenExpiry:   time.Minute * 15,
 		RefreshExpiry: time.Hour * 24,
-		CookieDomain:  app.CookieDomain,
 		CookiePath:    "/",
-		CookieName:    "__Host-refresh-token",
+		CookieName:    "__Host-refresh_token",
+		CookieDomain:  app.CookieDomain,
 	}
 
-	log.Printf("Starting application on port: %d", port)
+	log.Println("Starting application on port", port)
 
-	// start the web server
-	routes := app.routes()
-	err = http.ListenAndServe(fmt.Sprintf(":%d", port), routes)
+	// start a web server
+	err = http.ListenAndServe(fmt.Sprintf(":%d", port), app.routes())
 	if err != nil {
-		log.Fatal("Unable to start the http server")
+		log.Fatal(err)
 	}
-
 }
