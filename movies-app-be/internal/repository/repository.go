@@ -8,4 +8,5 @@ import (
 type DatabaseRepo interface {
 	Connection() *sql.DB
 	GetAllMovies() ([]*models.Movie, error)
+	GetUserByEmail(email string) (*models.User, error)
 }
