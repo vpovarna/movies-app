@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 	"net/http"
 )
 
@@ -36,8 +37,9 @@ func (app *application) Authenticate(w http.ResponseWriter, r *http.Request) {
 		Password string `json:"password"`
 	}
 
-	err := app.ReadJson(w, r, requestPayload)
+	err := app.ReadJson(w, r, &requestPayload)
 	if err != nil {
+		log.Println(err)
 		app.errorJson(w, err, http.StatusBadRequest)
 		return
 	}
