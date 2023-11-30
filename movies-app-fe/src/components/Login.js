@@ -25,7 +25,7 @@ const Login = () => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: "include",
+            credentials: 'include',
             body: JSON.stringify(payload),
         }
 
@@ -44,7 +44,7 @@ const Login = () => {
         })
         .catch(error => {
             setAlertClassName("alert-danger");
-            setAlertMessage(error)
+            setAlertMessage(error);
         })
     }
 
